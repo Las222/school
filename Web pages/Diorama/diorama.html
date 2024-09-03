@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sun & Moon Diorama</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #008080;
+            cursor: pointer;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let sunX, sunY, moonX, moonY;
+        let sunSize, moonSize;
+        let sunColor, moonColor;
+        let skyColor;
+        let stars = [];
+        let clouds = [];
+        let mousePress = false;
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            sunX = width / 4;
+            sunY = height / 2;
+            moonX = width * 0.75;
+            moonY = height / 2;
+            sunSize = min(width, height) * 0.1;
+            moonSize = min(width, height) * 0.1;
+            sunColor = color(255, 255, 0);
+            moonColor = color(200);
+            skyColor = color(135, 206, 250);
+
+            // Hvězdičky
+            for (let i = 0; i < 200; i++) {
+                stars.push(createVector(random(width), random(height)));
+            }
+
+            // Mráčky
+            for (let i = 0; i < 5; i++) {
+                let cloud = {
+                    x: random(width),
+                    y: random(height * 0.5),
+                    w: random(0.1 * width, 0.2 * width),
+                    h: random(0.05 * height, 0.1 * height),
+                    speed: random(0.2, 1)
+                };
+                clouds.push(cloud);
+            }
+        }
+
+        function draw() {
+            background(skyColor);
+
+            // Vykreslení hvězdiček
+            fill(255);
+            noStroke();
+            for (let i = 0; i < stars.length; i++) {
+                let starSize = min(width, height) * 0.005;
+                ellipse(stars[i].x, stars[i].y, starSize, starSize);
+            }
+
+            // Pohyb a vykreslení mráčků
+            for (let i = 0; i < clouds.length; i++) {
+                let cloud = clouds[i];
+                cloud.x += cloud.speed;
+                if (cloud.x > width + cloud.w) {
+                    cloud.x = -cloud.w;
+                    cloud.y = random(height * 0.5);
+                    cloud.w = random(0.1 * width, 0.2 * width);
+                    cloud.h = random(0.05 * height, 0.1 * height);
+                    cloud.speed = random(0.2, 1);
+                }
+                drawCloud(cloud.x, cloud.y, cloud.w, cloud.h);
+            }
+
+            // Sluníčko
+            fill(sunColor);
+            ellipse(sunX, sunY, sunSize, sunSize);
+
+            // Měsíček
+            fill(moonColor);
+            ellipse(moonX, moonY, moonSize, moonSize);
+
+            // Pohyb sluníčka a měsíčku
+            sunX = (sunX + 1) % width;
+            moonX = (moonX - 0.5) % width;
+            sunY = height / 2 + 0.1 * height * sin(frameCount * 0.05);
+            moonY = height / 2 + 0.1 * height * sin(frameCount * 0.05 + PI);
+
+            // Změna barvy sluníčka po kliknutí(držení) levého tlačítka u myši
+            if (mousePress) {
+                sunColor = color(random(255), random(255), random(255));
+            }
+        }
+
+        function drawCloud(x, y, w, h) {
+            fill(255);
+            noStroke();
+            ellipse(x, y, w, h);
+            ellipse(x + w * 0.25, y - h * 0.2, w * 0.8, h * 0.8);
+            ellipse(x + w * 0.6, y - h * 0.1, w * 0.7, h * 0.7);
+        }
+
+        function mousePressed() {
+            mousePress = true;
+        }
+
+        function mouseReleased() {
+            mousePress = false;
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+            sunX = width / 4;
+            moonX = width * 0.75;
+            sunSize = min(width, height) * 0.1;
+            moonSize = min(width, height) * 0.1;
+        }
+    </script>
+</body>
+</html>
