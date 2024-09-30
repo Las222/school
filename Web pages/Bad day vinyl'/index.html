@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinyly U Špatnýho dne</title>
+    <link rel="icon" type="image/x-icon" href="monstrum.jpg">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Vinyly U Špatnýho dne</h1>
+        </header>
+
+        <div class="vinyl-selection">
+            <h2>Vyberte si album</h2>
+            <div class="vinyl-list">
+                <div class="vinyl-item">
+                    <img src="nikdynebylmocpoeta.jpg" alt="Album 1 - never was much of a poet - 500kč">
+                    <h3>never was much of a poet</h3>
+                    <p>Umělec: marek</p>
+                    <p>Cena: 500 Kč</p>
+                    <button class="add-to-cart" data-name="never was much of a poet" data-price="500">Přidat do košíku</button>
+                </div>
+                <div class="vinyl-item">
+                    <img src="utikajicinaboj.jpg" alt="Album 2 - Speedin' Bullet 2 Heaven - 600kč">
+                    <h3>Speedin' Bullet 2 Heaven</h3>
+                    <p>Umělec: Kid Cudi</p>
+                    <p>Cena: 600 Kč</p>
+                    <button class="add-to-cart" data-name="Speedin' Bullet 2 Heaven" data-price="600">Přidat do košíku</button>
+                </div>
+                <div class="vinyl-item">
+                    <img src="rybkadoris.jpg" alt="Album 3 - Doris - 450kč">
+                    <h3>Doris</h3>
+                    <p>Umělec: Earl Sweatshirt</p>
+                    <p>Cena: 450 Kč</p>
+                    <button class="add-to-cart" data-name="Doris" data-price="450">Přidat do košíku</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cart">
+            <h2>Košík</h2>
+            <ul id="cart-items"></ul>
+            <p id="total-price">Celková cena: 0 Kč</p>
+            <button id="checkout-btn">Dokončit nákup</button>
+        </div>
+    </div>
+
+    <script>
+        let cartItems = [];
+        const cartList = document.getElementById('cart-items');
+        const totalPriceElem = document.getElementById('total-price');
+
+        // Přidání do košíku
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', () => {
+                const name = button.getAttribute('data-name');
+                const price = parseInt(button.getAttribute('data-price'));
+                cartItems.push({ name, price });
+                updateCart();
+            });
+        });
+
+        // Aktualizace košíku
+        function updateCart() {
+            cartList.innerHTML = '';
+            let totalPrice = 0;
+            cartItems.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `${item.name} - ${item.price} Kč <button class="remove-item" data-index="${index}">Odebrat</button>`;
+                cartList.appendChild(li);
+                totalPrice += item.price;
+            });
+            totalPriceElem.textContent = `Celková cena: ${totalPrice} Kč`;
+
+            // Přidání event listeneru pro odebrání položky
+            document.querySelectorAll('.remove-item').forEach(button => {
+                button.addEventListener('click', () => {
+                    const index = button.getAttribute('data-index');
+                    cartItems.splice(index, 1);
+                    updateCart();
+                });
+            });
+        }
+
+        // Dokončení nákupu
+        document.getElementById('checkout-btn').addEventListener('click', () => {
+            if (cartItems.length > 0) {
+                alert('Nákup dokončen! Děkujeme za objednávku.');
+                cartItems = [];
+                updateCart();
+            } else {
+                alert('Košík je prázdný!');
+            }
+        });
+    </script>
+</body>
+</html>
