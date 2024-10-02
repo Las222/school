@@ -35,13 +35,13 @@ class IPCalculator
 
     private int[] GetNetworkIP(int[] netMask) 
     {
-        // Výpočet IP adresy sítě: AND operace mezi IP a maskou
+        // Výpočet IP adresy sítě
         return _address.Zip(netMask, (a, m) => a & m).ToArray();
     }
 
     private int[] GetBroadcastIP(int[] netMask) 
     {
-        // Výpočet broadcast IP: OR operace mezi IP a negovanou maskou
+        // Výpočet broadcast IP
         return _address.Zip(netMask, (a, m) => a | ~m & 255).ToArray();
     }
 
@@ -64,13 +64,13 @@ class Program
 {
     static void Main()
     {
-        Console.Write("Enter an IP address (e.g. 192.168.1.1/24) or press Enter for default (192.168.1.1/24): ");
+        Console.Write("Zadej IP Adresu (např. 192.168.1.1/24) nebo dej Enter pro default: (192.168.1.1/24): ");
         string ip = Console.ReadLine();
 
         if (string.IsNullOrWhiteSpace(ip))
         {
             ip = "192.168.1.1/24";
-            Console.WriteLine("No input provided. Using default IP address: 192.168.1.1/24");
+            Console.WriteLine("Žádný input. Byla použita default adresa: 192.168.1.1/24");
         }
 
         new IPCalculator(ip).DisplayResult();  // Spočítá a zobrazí výsledky
