@@ -1,4 +1,4 @@
-# Úkol: Posílání hodnot mezi skripty
+# Posílání hodnot mezi skripty
 
 ## Způsoby předávání hodnoty
 1. **GET (parametr v URL)**
