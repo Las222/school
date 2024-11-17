@@ -1,4 +1,3 @@
-
 <?php
 // Vygenerujeme náhodné číslo
 $randomValue = rand(1, 100);
