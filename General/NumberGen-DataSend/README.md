@@ -1,8 +1,5 @@
 # Úkol: Posílání hodnot mezi skripty
 
-## Popis úkolu
-V tomto projektu jsou dva skripty: `a.php` a `b.php`. Skript `a.php` vygeneruje náhodnou hodnotu a předává ji různými způsoby do `b.php`, který tuto hodnotu zobrazí.
-
 ## Způsoby předávání hodnoty
 1. **GET (parametr v URL)**
    - Hodnota je přidána do URL jako query string (`?value=...`).
@@ -24,10 +21,7 @@ V tomto projektu jsou dva skripty: `a.php` a `b.php`. Skript `a.php` vygeneruje 
    - Vhodné pro uchování dat na delší dobu.
    - Ukázka: `setcookie('value', $randomValue, time() + 3600, "/");`
 
-## Jak spustit
+## Jak to spustit
 1. Nahrajte oba soubory na webový server.
 2. Otevřete `a.php` v prohlížeči.
 3. Klikněte na různé odkazy a podívejte se, jak se hodnota zobrazuje na `b.php`.
-
-## Poznámka
-Tento projekt je ukázkový, neřeší zabezpečení nebo produkční nasazení.
