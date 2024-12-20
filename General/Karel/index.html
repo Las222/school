@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karel - JS</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #333; color: #fff; margin: 0; padding: 0; }
+        #main { display: flex; justify-content: center; align-items: flex-start; margin: 20px; }
+        #controls { margin-right: 20px; }
+        #commands { width: 300px; height: 200px; }
+        #instructions { background-color: #444; padding: 10px; border-radius: 5px; }
+        h1 { text-align: center; }
+        #karel { display: grid; grid-template-columns: repeat(10, 40px); grid-template-rows: repeat(10, 40px); margin: 20px auto; gap: 1px; }
+        .cell { width: 40px; height: 40px; background-color: #444; display: flex; align-items: center; justify-content: center; color: #fff; position: relative; }
+        .karel { background-color: transparent; position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold; z-index: 1; }
+        .marker { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+    </style>
+</head>
+<body>
+    <h1>Karel</h1>
+    <div id="main">
+        <div id="controls">
+            <textarea id="commands" placeholder="Zadejte příkazy..."></textarea>
+            <button onclick="execute()">Proveď</button>
+        </div>
+        <div id="instructions">
+            <h3>Možné příkazy:</h3>
+            <ul>
+                <li><strong>KROK [X]</strong> - Posune Karla o X kroků ve směru natočení (např. KROK 4).</li>
+                <li><strong>VLEVOBOK [X]</strong> - Otočí Karla doleva X-krát.</li>
+                <li><strong>VPRAVOBOK [X]</strong> - Otočí Karla doprava X-krát.</li>
+                <li><strong>POLOZ [barva]</strong> - Položí na aktuální pozici Karla čtvereček s barvou (např. POLOZ RED).</li>
+                <li><strong>RESET</strong> - Vyčistí pole a nastaví Karla na počáteční pozici.</li>
+            </ul>
+        </div>
+    </div>
+    <div id="karel"></div>
+    <script>
+        const gridSize = 10;
+        const grid = [];
+        let karelPos = { x: 0, y: 0 };
+        let karelDir = 0;
+
+        function createGrid() {
+            const container = document.getElementById('karel');
+            container.innerHTML = '';
+            for (let y = 0; y < gridSize; y++) {
+                grid[y] = [];
+                for (let x = 0; x < gridSize; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    const marker = document.createElement('div');
+                    marker.className = 'marker';
+                    cell.appendChild(marker);
+                    const karelElement = document.createElement('div');
+                    karelElement.className = 'karel';
+                    cell.appendChild(karelElement);
+                    container.appendChild(cell);
+                    grid[y][x] = cell;
+                }
+            }
+            updateKarel();
+        }
+
+        function updateKarel() {
+            grid.forEach(row => row.forEach(cell => {
+                const karelElement = cell.querySelector('.karel');
+                karelElement.textContent = '';
+            }));
+            const directions = ['→', '↓', '←', '↑'];
+            const currentCell = grid[karelPos.y][karelPos.x];
+            const karelElement = currentCell.querySelector('.karel');
+            karelElement.textContent = directions[karelDir];
+        }
+
+        function move(steps) {
+            for (let i = 0; i < steps; i++) {
+                if (karelDir === 0 && karelPos.x < gridSize - 1) karelPos.x++;
+                else if (karelDir === 1 && karelPos.y < gridSize - 1) karelPos.y++;
+                else if (karelDir === 2 && karelPos.x > 0) karelPos.x--;
+                else if (karelDir === 3 && karelPos.y > 0) karelPos.y--;
+                updateKarel();
+            }
+        }
+
+        function turnLeft(times) {
+            karelDir = (karelDir + times) % 4;
+            updateKarel();
+        }
+
+        function turnRight(times) {
+            karelDir = (karelDir - times + 4) % 4;
+            updateKarel();
+        }
+
+        function place(color) {
+            const currentCell = grid[karelPos.y][karelPos.x];
+            const marker = currentCell.querySelector('.marker');
+            marker.style.backgroundColor = color;
+        }
+
+        function reset() {
+            karelPos = { x: 0, y: 0 };
+            karelDir = 0;
+            grid.forEach(row => row.forEach(cell => {
+                const marker = cell.querySelector('.marker');
+                marker.style.backgroundColor = '';
+                const karelElement = cell.querySelector('.karel');
+                karelElement.textContent = '';
+            }));
+            updateKarel();
+        }
+
+        function execute() {
+            const commands = document.getElementById('commands').value.toUpperCase().split('\n');
+            commands.forEach(command => {
+                const [cmd, param] = command.split(' ');
+                if (cmd === 'KROK') move(parseInt(param) || 1);
+                else if (cmd === 'VPRAVOBOK') turnLeft(parseInt(param) || 1);
+                else if (cmd === 'VLEVOBOK') turnRight(parseInt(param) || 1);
+                else if (cmd === 'POLOZ') place(param.toLowerCase());
+                else if (cmd === 'RESET') reset();
+            });
+        }
+
+        createGrid();
+    </script>
+</body>
+</html>
